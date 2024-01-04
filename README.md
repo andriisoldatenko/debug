@@ -25,3 +25,8 @@ kubectl debug -it -n demo \
 ```bash
 kubectl debug node/<name-of-your-node> -it --image=asoldatenko/debug
 ```
+
+
+# TODO:
+- reduce size of the image :_
+- add more tools :_
