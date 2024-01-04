@@ -19,3 +19,9 @@ kubectl debug -it -n demo \
   --image=asoldatenko/debug \
   --share-processes -- sh
 ```
+
+
+## Debug node
+```bash
+kubectl debug node/<name-of-your-node> -it --image=asoldatenko/debug
+```
