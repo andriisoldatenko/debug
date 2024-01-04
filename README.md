@@ -1,3 +1,8 @@
+![](https://github.com/andriisoldatenko/debug/actions/workflows/docker-publish.yml/badge.svg)
+[![Docker Pulls](https://badgen.net/docker/pulls/asoldatenko/debug?icon=docker&label=pulls)](https://hub.docker.com/r/asoldatenko/debug/)
+[![Docker Stars](https://badgen.net/docker/stars/asoldatenko/debug?icon=docker&label=stars)](https://hub.docker.com/r/asoldatenko/debug/)
+[![Docker Image Size](https://badgen.net/docker/size/asoldatenko/debug?icon=docker&label=image%20size)](https://hub.docker.com/r/asoldatenko/debug/)
+
 # debug
 Debug docker image for troubleshooting/debugging inside k8s
 
