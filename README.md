@@ -28,5 +28,10 @@ kubectl debug node/<name-of-your-node> -it --image=asoldatenko/debug
 
 
 # TODO:
+- add more from https://github.com/raesene/alpine-containertools
+- https://github.com/nicolaka/netshoot
+- https://github.com/arunvelsriram/utils
+- https://github.com/digitalocean/doks-debug
+- https://github.com/lightrun-platform/koolkits?tab=readme-ov-file#readme
 - reduce size of the image :_
 - add more tools :_
