@@ -3,7 +3,7 @@ FROM alpine:3.19.1
 RUN apk update && \
     apk add --no-cache \
     # build/code
-    build-base git go bash bash-completion ncurses vim tmux jq \
+    build-base git go delve bash bash-completion ncurses vim tmux jq \
     # db
     sqlite \
     # network
