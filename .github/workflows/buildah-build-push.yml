@@ -1,0 +1,59 @@
+name: Build Image buildah
+on: [push]
+
+env:
+  REGISTRY: quay.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: debug
+
+jobs:
+  build-image:
+    name: Build image without Containerfile
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install qemu dependency
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-user-static
+
+    - name: Build Image
+      id: build_image_multiplatform
+      uses: ./buildah-build/
+      with:
+        image: ${{ env.IMAGE_NAME }}
+        tags: latest ${{ github.sha }}
+        platforms: linux/amd64, linux/arm64
+        containerfiles: |
+          ./Containerfile
+
+    - name: Echo Outputs
+      run: |
+        echo "Image: ${{ steps.build_image_multiplatform.outputs.image }}"
+        echo "Tags: ${{ steps.build_image_multiplatform.outputs.tags }}"
+        echo "Tagged Image: ${{ steps.build_image_multiplatform.outputs.image-with-tag }}"
+
+    - name: Check images created
+      run: buildah images | grep '${{ env.IMAGE_NAME }}'
+
+    - name: Check manifest
+      run: |
+        set -x
+        buildah manifest inspect ${{ steps.build_image_multiplatform.outputs.image }}:${{ env.IMAGE_TAG }}
+
+    # Podman Login action (https://github.com/redhat-actions/podman-login) also be used to log in,
+    # in which case 'username' and 'password' can be omitted.
+    - name: Push To quay.io
+      id: push-to-quay
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-image.outputs.image }}
+        tags: ${{ steps.build-image.outputs.tags }}
+        registry: quay.io/andrii_soldatenko
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    - name: Print image url
+      run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
