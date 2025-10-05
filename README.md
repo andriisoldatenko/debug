@@ -34,8 +34,8 @@ kubectl debug node/<name-of-your-node> -it --image=asoldatenko/debug
 ```
 
 
-# TODO:
-- add more from https://github.com/raesene/alpine-containertools
+## Similar projects:
+- https://github.com/raesene/alpine-containertools
 - https://github.com/nicolaka/netshoot
 - https://github.com/arunvelsriram/utils
 - https://github.com/digitalocean/doks-debug
