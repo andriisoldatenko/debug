@@ -2,10 +2,9 @@ name: Build Image buildah
 on: [push]
 
 env:
-  REGISTRY: quay.io
-  # github.repository as <account>/<repo>
+  IMAGE_REGISTRY: quay.io
   IMAGE_NAME: debug
-  IMAGE_TAG: latest
+  IMAGE_TAGS: latest ${{ github.sha }}
 
 jobs:
   build-image:
@@ -15,11 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # TODO: replace with docker-qemu to speedup
-      # - name: Install qemu dependency
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y qemu-user-static
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -28,7 +22,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2.13
         with:
           image: ${{ env.IMAGE_NAME }}
-          tags: ${{ env.IMAGE_TAG }} ${{ github.sha }}
+          tags: ${{ env.IMAGE_TAGS }}
           platforms: linux/amd64, linux/arm64
           containerfiles: |
             ./Dockerfile
