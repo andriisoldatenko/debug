@@ -55,7 +55,6 @@ jobs:
         with:
           image: ${{ steps.build_image_multiplatform.outputs.image }}
           tags: ${{ steps.build_image_multiplatform.outputs.tags }}
-          registry: quay.io/andrii_soldatenko
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
