@@ -21,7 +21,7 @@ jobs:
 
       - name: Build Image
         id: build_image_multiplatform
-        uses: ./buildah-build/
+        uses: redhat-actions/buildah-build@2.13
         with:
           image: ${{ env.IMAGE_NAME }}
           tags: latest ${{ github.sha }}
