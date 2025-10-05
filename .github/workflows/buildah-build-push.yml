@@ -3,6 +3,7 @@ on: [push]
 
 env:
   IMAGE_REGISTRY: quay.io
+  IMAGE_NAMESPACE: andrii_soldatenko
   IMAGE_NAME: debug
   IMAGE_TAGS: latest ${{ github.sha }}
 
@@ -21,7 +22,7 @@ jobs:
         id: build_image_multiplatform
         uses: redhat-actions/buildah-build@v2.13
         with:
-          image: ${{ env.IMAGE_NAME }}
+          image: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
           tags: ${{ env.IMAGE_TAGS }}
           platforms: linux/amd64, linux/arm64
           containerfiles: |
@@ -39,7 +40,7 @@ jobs:
       - name: Check manifest
         run: |
           set -x
-          buildah manifest inspect ${{ steps.build_image_multiplatform.outputs.image }}:${{ env.IMAGE_TAG }}
+          buildah manifest inspect ${{ steps.build_image_multiplatform.outputs.image }}:${{ github.sha }}
 
       # Podman Login action (https://github.com/redhat-actions/podman-login) also be used to log in,
       # in which case 'username' and 'password' can be omitted.
@@ -49,7 +50,6 @@ jobs:
         with:
           image: ${{ steps.build_image_multiplatform.outputs.image }}
           tags: ${{ steps.build_image_multiplatform.outputs.tags }}
-          registry: quay.io/andrii_soldatenko
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
