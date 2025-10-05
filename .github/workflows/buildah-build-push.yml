@@ -9,17 +9,19 @@ env:
 
 jobs:
   build-image:
-    name: Build image without Containerfile
+    name: Build image buildah
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
       # TODO: replace with docker-qemu to speedup
-      - name: Install qemu dependency
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-user-static
+      # - name: Install qemu dependency
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y qemu-user-static
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
 
       - name: Build Image
         id: build_image_multiplatform
@@ -51,8 +53,8 @@ jobs:
         id: push-to-quay
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ steps.build-image.outputs.image }}
-          tags: ${{ steps.build-image.outputs.tags }}
+          image: ${{ steps.build_image_multiplatform.outputs.image }}
+          tags: ${{ steps.build_image_multiplatform.outputs.tags }}
           registry: quay.io/andrii_soldatenko
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
