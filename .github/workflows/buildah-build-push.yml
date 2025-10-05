@@ -4,7 +4,7 @@ on: [push]
 env:
   REGISTRY: quay.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: quay.io/andrii_soldatenko/debug
+  IMAGE_NAME: debug
   IMAGE_TAG: latest
 
 jobs:
@@ -55,6 +55,7 @@ jobs:
         with:
           image: ${{ steps.build_image_multiplatform.outputs.image }}
           tags: ${{ steps.build_image_multiplatform.outputs.tags }}
+          registry: quay.io/andrii_soldatenko
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
