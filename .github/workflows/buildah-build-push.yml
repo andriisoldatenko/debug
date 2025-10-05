@@ -1,0 +1,64 @@
+name: Build Image buildah
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ 'v*.*.*' ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  IMAGE_REGISTRY: quay.io
+  IMAGE_NAMESPACE: andrii_soldatenko
+  IMAGE_NAME: debug
+  IMAGE_TAGS: latest ${{ github.sha }}
+
+jobs:
+  build-image:
+    name: Build image buildah
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf # v3.2.0
+
+      - name: Build Image
+        id: build_image_multiplatform
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2.13
+        with:
+          image: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
+          tags: ${{ env.IMAGE_TAGS }}
+          platforms: linux/amd64, linux/arm64
+          containerfiles: |
+            ./Dockerfile
+
+      - name: Echo Outputs
+        run: |
+          echo "Image: ${{ steps.build_image_multiplatform.outputs.image }}"
+          echo "Tags: ${{ steps.build_image_multiplatform.outputs.tags }}"
+          echo "Tagged Image: ${{ steps.build_image_multiplatform.outputs.image-with-tag }}"
+
+      - name: Check images created
+        run: buildah images | grep '${{ env.IMAGE_NAME }}'
+
+      - name: Check manifest
+        run: |
+          set -x
+          buildah manifest inspect ${{ steps.build_image_multiplatform.outputs.image }}:${{ github.sha }}
+
+      # Podman Login action (https://github.com/redhat-actions/podman-login) also be used to log in,
+      # in which case 'username' and 'password' can be omitted.
+      - name: Push To quay.io
+        id: push-to-quay
+        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2.8
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ steps.build_image_multiplatform.outputs.tags }}
+          registry: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAMESPACE }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Print image url
+        run: echo "Image pushed to ${{ steps.push-to-quay.outputs.registry-paths }}"
