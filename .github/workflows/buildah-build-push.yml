@@ -10,7 +10,7 @@ env:
   IMAGE_REGISTRY: quay.io
   IMAGE_NAMESPACE: andrii_soldatenko
   IMAGE_NAME: debug
-  IMAGE_TAGS: latest ${{ github.sha }}
+  IMAGE_TAGS: ${{ github.sha }}
 
 jobs:
   build-image:
@@ -55,7 +55,7 @@ jobs:
         uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2.8
         with:
           image: ${{ env.IMAGE_NAME }}
-          tags: ${{ steps.build_image_multiplatform.outputs.tags }}
+          tags: latest ${{ steps.build_image_multiplatform.outputs.tags }}
           registry: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAMESPACE }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
