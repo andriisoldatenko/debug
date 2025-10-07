@@ -47,6 +47,7 @@ jobs:
         run: |
           set -x
           buildah manifest inspect ${{ steps.build_image_multiplatform.outputs.image }}:${{ github.sha }}
+          buildah manifest inspect ${{ steps.build_image_multiplatform.outputs.image }}:latest
 
       # Podman Login action (https://github.com/redhat-actions/podman-login) also be used to log in,
       # in which case 'username' and 'password' can be omitted.
