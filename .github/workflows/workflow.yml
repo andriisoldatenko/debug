@@ -16,6 +16,6 @@ jobs:
           mv operator-sdk_linux_amd64  /usr/local/bin/operator-sdk
           operator-sdk version
       - name: Check Operator SDK
-        id: hello-step
+        id: check-step
         run: |
           operator-sdk version
